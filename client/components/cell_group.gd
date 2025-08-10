@@ -50,6 +50,7 @@ func _has_point(point: Vector2) -> bool:
 func _get_drag_data(at_position: Vector2) -> Variant:
     #print("_get_drag_data", at_position)
     var preview := duplicate() as Control
+    preview.position = -at_position # ドラッグ開始位置との差分を設定してカーソル位置を維持する
     set_drag_preview(preview)
     return { "node": self }
 
