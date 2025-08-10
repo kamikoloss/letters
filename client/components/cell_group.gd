@@ -40,9 +40,14 @@ func _notification(what: int) -> void:
 ## マウスカーソルがオブジェクト内にあるかどうか
 ## この結果により _get_drag_data() が発火するかどうかが決まる
 func _has_point(point: Vector2) -> bool:
-    # TODO
-    print("_has_point", point)
-    return true
+    # `point` は CellGroup 内でのローカル座標
+    # 子供の Cell のどれかにカーソルがあるかを判定する
+    for child in get_children():
+        if child is Cell:
+            var rect := Rect2(child.position, Vector2(CELL_LENGTH, CELL_LENGTH))
+            if rect.has_point(point):
+                return true
+    return false
 
 
 func _get_drag_data(at_position: Vector2) -> Variant:
