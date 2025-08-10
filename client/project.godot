@@ -12,6 +12,7 @@ config_version=5
 
 config/name="LETTERS"
 config/version="v0.0.0"
+run/main_scene="uid://cnkoo8r5pnkli"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
 
