@@ -1,9 +1,17 @@
-[gd_scene load_steps=3 format=3 uid="uid://cnkoo8r5pnkli"]
+[gd_scene load_steps=4 format=3 uid="uid://cnkoo8r5pnkli"]
 
 [ext_resource type="Script" uid="uid://b1pbxsova4vmt" path="res://scenes/game/game.gd" id="1_sul5r"]
-[ext_resource type="PackedScene" uid="uid://davabsbnewlro" path="res://components/cell.tscn" id="2_7h61r"]
+[ext_resource type="PackedScene" uid="uid://dw7vfb204p0ci" path="res://components/cell_group.tscn" id="2_7h61r"]
+[ext_resource type="PackedScene" uid="uid://r88ha7i56wdt" path="res://components/cell_holder.tscn" id="3_0sr1o"]
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_sul5r")
+_cell_group_scene = ExtResource("2_7h61r")
 
-[node name="Cell" parent="." instance=ExtResource("2_7h61r")]
+[node name="CellHolder" parent="." instance=ExtResource("3_0sr1o")]
+offset_left = 360.0
+offset_right = 360.0
+
+[node name="CellHolder2" parent="." instance=ExtResource("3_0sr1o")]
+offset_left = 680.0
+offset_right = 680.0

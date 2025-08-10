@@ -19,8 +19,8 @@ var is_dragging := false
 
 func _ready() -> void:
     # debug
-    letters = "LETTERS"
-    shape = [[1,1,1],[0,1,0]]
+    #letters = "LETTERS"
+    #shape = [[1,1,1],[0,1,0]]
 
     _init_shape()
 
