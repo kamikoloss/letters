@@ -2,9 +2,6 @@ class_name CellGroup
 extends Control
 ## 呪文の文字群
 
-## Cell の一辺の長さ (px)
-const CELL_LENGTH = 40
-
 ## Cell のシーン元
 @export var _cell_scene: PackedScene
 
@@ -44,7 +41,7 @@ func _has_point(point: Vector2) -> bool:
     # 子供の Cell のどれかにカーソルがあるかを判定する
     for child in get_children():
         if child is Cell:
-            var rect := Rect2(child.position, Vector2(CELL_LENGTH, CELL_LENGTH))
+            var rect := Rect2(child.position, Cell.CELL_SIZE)
             if rect.has_point(point):
                 return true
     return false
@@ -71,5 +68,5 @@ func _init_shape() -> void:
                 cell.position = Vector2(cell_x, cell_y)
                 add_child(cell)
                 index += 1
-            cell_x += CELL_LENGTH
-        cell_y += CELL_LENGTH
+            cell_x += Cell.CELL_SIZE.x
+        cell_y += Cell.CELL_SIZE.y
