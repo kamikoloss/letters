@@ -2,14 +2,16 @@
 
 [ext_resource type="Script" uid="uid://cqf7bt41oou48" path="res://components/cell.gd" id="1_e0bep"]
 
-[node name="Cell" type="Control" node_paths=PackedStringArray("label", "bg")]
+[node name="Cell" type="Control" node_paths=PackedStringArray("_label", "_bg")]
+custom_minimum_size = Vector2(40, 40)
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+mouse_filter = 2
 script = ExtResource("1_e0bep")
-label = NodePath("Label")
-bg = NodePath("ColorRect")
+_label = NodePath("Label")
+_bg = NodePath("ColorRect")
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 1
@@ -27,4 +29,5 @@ vertical_alignment = 1
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
+mouse_filter = 2
 color = Color(1, 1, 1, 0.2)

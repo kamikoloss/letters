@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://dw7vfb204p0ci"]
+
+[ext_resource type="Script" uid="uid://ctgvks1e8nq2f" path="res://components/cell_group.gd" id="1_keujq"]
+[ext_resource type="PackedScene" uid="uid://davabsbnewlro" path="res://components/cell.tscn" id="2_jfguu"]
+
+[node name="CellGroup" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_keujq")
+_cell_scene = ExtResource("2_jfguu")
