@@ -10,8 +10,8 @@ const CELL_LENGTH = 40
 
 ## 呪文の文字列
 var spell := ""
-## 形の二次元配列 (1 = セルあり, 0 = セルなし)
-## 例 (T 字型): [[0,1,0],[1,1,1]]
+## 呪文の形を表現する二次元配列 (1 = セルあり, 0 = セルなし)
+## 例 (T 字型): [[1,1,1],[0,1,0]]
 var shape := []
 ## ドラッグ中かどうか
 var is_dragging := false
@@ -20,7 +20,7 @@ var is_dragging := false
 func _ready() -> void:
     # debug
     spell = "LETTERS"
-    shape = [[0,1,0],[1,1,1]]
+    shape = [[1,1,1],[0,1,0]]
 
     _init_shape()
 
