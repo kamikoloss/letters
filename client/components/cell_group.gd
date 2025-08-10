@@ -9,7 +9,7 @@ const CELL_LENGTH = 40
 @export var _cell_scene: PackedScene
 
 ## 呪文の文字列
-var spell := ""
+var letters := ""
 ## 呪文の形を表現する二次元配列 (1 = セルあり, 0 = セルなし)
 ## 例 (T 字型): [[1,1,1],[0,1,0]]
 var shape := []
@@ -19,7 +19,7 @@ var is_dragging := false
 
 func _ready() -> void:
     # debug
-    spell = "LETTERS"
+    letters = "LETTERS"
     shape = [[1,1,1],[0,1,0]]
 
     _init_shape()
@@ -51,7 +51,7 @@ func _has_point(point: Vector2) -> bool:
 
 
 func _get_drag_data(at_position: Vector2) -> Variant:
-    print("_get_drag_data", at_position)
+    #print("_get_drag_data", at_position)
     var preview := duplicate() as Control
     set_drag_preview(preview)
     return { "node": self }
@@ -67,7 +67,7 @@ func _init_shape() -> void:
         for col in row:
             if col == 1:
                 var cell := _cell_scene.instantiate()
-                cell.letter = spell[index]
+                cell.letter = letters[index]
                 cell.position = Vector2(cell_x, cell_y)
                 add_child(cell)
                 index += 1
