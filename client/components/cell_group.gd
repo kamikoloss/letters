@@ -21,6 +21,8 @@ var is_dragging := false
 var _cells: Array[Cell] = []
 ## ドラッグを開始した座標
 var _drag_start_global_position: Vector2
+## 自身の中央の座標
+var _center_position: Vector2
 
 
 func _ready() -> void:
@@ -34,7 +36,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
     # ドラッグ中の場合
     if is_dragging:
-        global_position = get_global_mouse_position()
+        global_position = get_global_mouse_position() - _center_position
 
 
 ## 呪文の文字列と形状を元に初期化する
@@ -59,6 +61,8 @@ func _init_cells() -> void:
                 cell.cell_entered.connect(_on_cell_entered)
             cell_x += Cell.CELL_SIZE.x
         cell_y += Cell.CELL_SIZE.y
+    # 自身の中央の座標を算出する
+    _center_position = Vector2(cell_x, cell_y) / 2
 
 
 func _on_hovered(on: bool) -> void:
@@ -76,7 +80,6 @@ func _on_hovered(on: bool) -> void:
 func _on_dragged(on: bool) -> void:
     print("_on_dragged(on: %s)" % [on])
     is_dragging = on
-    # TODO: tween で移動する
     # TODO: 自身の位置を調整する 全体の中央を算出するとか？
 
     # ドラッグを開始したとき
@@ -85,6 +88,7 @@ func _on_dragged(on: bool) -> void:
     # ドラッグを終了したとき
     else:
         # ドロップできるとき
+        # TODO: tween で移動する
         if can_drop:
             global_position = snapped(global_position, Cell.CELL_SIZE)
         else:
