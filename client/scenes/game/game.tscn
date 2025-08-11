@@ -9,7 +9,11 @@ script = ExtResource("1_sul5r")
 _cell_group_scene = ExtResource("2_7h61r")
 
 [node name="CellHolder" parent="." instance=ExtResource("3_0sr1o")]
+offset_top = 160.0
+offset_bottom = 160.0
 
 [node name="CellHolder2" parent="." instance=ExtResource("3_0sr1o")]
-offset_left = 680.0
-offset_right = 680.0
+offset_left = 320.0
+offset_top = 160.0
+offset_right = 320.0
+offset_bottom = 160.0
