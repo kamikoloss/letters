@@ -26,10 +26,6 @@ var _center_position: Vector2
 
 
 func _ready() -> void:
-    # debug
-    #letters = "LETTERS"
-    #shape = [[1,1,1],[0,1,0]]
-
     _init_cells()
 
 

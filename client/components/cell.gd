@@ -24,8 +24,6 @@ const CELL_SIZE = Vector2(40, 40)
 
 ## ドロップできるかどうか (1マス分)
 var can_drop := false
-
-
 ## 呪文の1文字
 var letter := "":
     set(v):
@@ -58,15 +56,15 @@ func _on_area_entered(area: Area2D) -> void:
     # TODO: 情報見る
     can_drop = true
     cell_entered.emit(true)
-    if can_drop:
-        if is_holder:
+    if is_holder:
+        if can_drop:
             _bg.color = Color(Color.GREEN, 0.2)
-    else:
-        if is_holder:
+        else:
             _bg.color = Color(Color.RED, 0.2)
 
 
 func _on_area_exited(area: Area2D) -> void:
+    # TODO: 入っても無効になることがある
     can_drop = false
     cell_entered.emit(false)
     if is_holder:
