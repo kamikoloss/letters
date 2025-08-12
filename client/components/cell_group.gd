@@ -23,6 +23,8 @@ var _cells: Array[Cell] = []
 var _drag_start_global_position: Vector2
 ## 自身の中央の座標
 var _center_position: Vector2
+## 直前に重なっていた Cell のリスト
+var _prev_overrapping_cells: Array[Cell] = []
 
 
 func _ready() -> void:
@@ -94,6 +96,12 @@ func _on_cell_entered(on: bool) -> void:
     #print("_on_cell_entered(on: %s)" % [on])
     # この処理の発火タイミングとなる "他の Cell に 入った/外れた" タイミングで更新する
     # TODO: マス目分見てるので一気に複数発火する？まあいいか
+    # 直前に重なっていた Cell の色を戻す
+    for cell in _prev_overrapping_cells:
+        if cell is Cell:
+            cell.bg_color = Color(Color.BLACK, 0.2)
+    _prev_overrapping_cells.clear()
+
     var overrapping_cells: Array[Cell] = [] # 重なっている Cell
     for cell in _cells:
         if cell is Cell:
@@ -117,6 +125,7 @@ func _on_cell_entered(on: bool) -> void:
                     nearest_cell.bg_color = Color(Color.GREEN, 0.2)
                 else:
                     nearest_cell.bg_color = Color(Color.BLACK, 0.2)
+    _prev_overrapping_cells = overrapping_cells
     print("overrapping_cells", overrapping_cells)
 
     if overrapping_cells.is_empty():
