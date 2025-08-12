@@ -29,7 +29,7 @@ var letter := "":
         letter = v
         _label.text = v
 ##
-var bg_color := Color(Color.BLUE, 0.2):
+var bg_color := Color(Color.BLACK, 0.2):
     get():
         return _bg.color
     set(v):

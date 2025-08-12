@@ -93,6 +93,7 @@ func _on_dragged(on: bool) -> void:
 func _on_cell_entered(on: bool) -> void:
     #print("_on_cell_entered(on: %s)" % [on])
     # この処理の発火タイミングとなる "他の Cell に 入った/外れた" タイミングで更新する
+    # TODO: マス目分見てるので一気に複数発火する？まあいいか
     var overrapping_cells: Array[Cell] = [] # 重なっている Cell
     for cell in _cells:
         if cell is Cell:
