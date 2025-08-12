@@ -55,20 +55,20 @@ func _on_mouse_exited() -> void:
 
 
 func _on_area_entered(area: Area2D) -> void:
+    # 侵入した分だけカウントを増やす
     # TODO: 情報見る
-    ## 侵入した分だけカウントを増やす
     _overlap_count += 1
     _update_drop_state()
 
 
 func _on_area_exited(area: Area2D) -> void:
-    ## 退出した分だけカウントを減らす
+    # 退出した分だけカウントを減らす
     _overlap_count = max(_overlap_count - 1, 0)
     _update_drop_state()
 
 
 func _update_drop_state() -> void:
-    ## 重なっている Area の数に応じて状態を更新する
+    # 重なっている Area の数に応じて状態を更新する
     can_drop = _overlap_count > 0
     cell_entered.emit(can_drop)
     if is_holder:
