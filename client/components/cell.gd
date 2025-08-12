@@ -24,6 +24,8 @@ const CELL_SIZE = Vector2(40, 40)
 
 ## ドロップできるかどうか (1マス分)
 var can_drop := false
+## 重なっている Area の数
+var _overlap_count := 0
 ## 呪文の1文字
 var letter := "":
     set(v):
@@ -54,18 +56,23 @@ func _on_mouse_exited() -> void:
 
 func _on_area_entered(area: Area2D) -> void:
     # TODO: 情報見る
-    can_drop = true
-    cell_entered.emit(true)
+    ## 侵入した分だけカウントを増やす
+    _overlap_count += 1
+    _update_drop_state()
+
+
+func _on_area_exited(area: Area2D) -> void:
+    ## 退出した分だけカウントを減らす
+    _overlap_count = max(_overlap_count - 1, 0)
+    _update_drop_state()
+
+
+func _update_drop_state() -> void:
+    ## 重なっている Area の数に応じて状態を更新する
+    can_drop = _overlap_count > 0
+    cell_entered.emit(can_drop)
     if is_holder:
         if can_drop:
             _bg.color = Color(Color.GREEN, 0.2)
         else:
-            _bg.color = Color(Color.RED, 0.2)
-
-
-func _on_area_exited(area: Area2D) -> void:
-    # TODO: 入っても無効になることがある
-    can_drop = false
-    cell_entered.emit(false)
-    if is_holder:
-        _bg.color = Color(Color.BLACK, 0.2)
+            _bg.color = Color(Color.BLACK, 0.2)
