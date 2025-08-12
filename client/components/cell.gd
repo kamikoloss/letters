@@ -15,6 +15,10 @@ signal cell_entered # (on: bool)
 ## TODO: 決め打ちでいいのだろうか？
 const CELL_SIZE = Vector2(40, 40)
 
+const COLOR_DEFAULT = Color(Color.BLACK, 0.2)
+const COLOR_SUCCESS = Color(Color.GREEN, 0.2)
+const COLOR_DANGER = Color(Color.RED, 0.2)
+
 ## 呪文ホルダー側かどうか
 ## true: 呪文ホルダー側, false: 呪文オブジェクト側
 @export var is_holder := false
@@ -29,7 +33,7 @@ var letter := "":
         letter = v
         _label.text = v
 ##
-var bg_color := Color(Color.BLACK, 0.2):
+var bg_color := COLOR_DEFAULT:
     get():
         return _bg.color
     set(v):
@@ -43,6 +47,8 @@ func _ready() -> void:
     if not is_holder:
         area.area_entered.connect(_on_area_entered)
         area.area_exited.connect(_on_area_exited)
+
+    bg_color = COLOR_DEFAULT
 
 
 func _gui_input(event: InputEvent) -> void:

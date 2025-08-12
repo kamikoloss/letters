@@ -70,7 +70,7 @@ func _on_hovered(on: bool) -> void:
     #print("_on_hovered(on: %s)" % [on])
     for cell in _cells:
         if on:
-            cell.modulate = Color(1, 1, 1, 0.8)
+            cell.modulate = Color(1, 1, 1, 0.6)
         else:
             cell.modulate = Color(1, 1, 1, 1)
 
@@ -96,10 +96,11 @@ func _on_cell_entered(on: bool) -> void:
     #print("_on_cell_entered(on: %s)" % [on])
     # この処理の発火タイミングとなる "他の Cell に 入った/外れた" タイミングで更新する
     # TODO: マス目分見てるので一気に複数発火する？まあいいか
+
     # 直前に重なっていた Cell の色を戻す
     for cell in _prev_overrapping_cells:
         if cell is Cell:
-            cell.bg_color = Color(Color.BLACK, 0.2)
+            cell.bg_color = Cell.COLOR_DEFAULT
     _prev_overrapping_cells.clear()
 
     var overrapping_cells: Array[Cell] = [] # 重なっている Cell
@@ -122,11 +123,9 @@ func _on_cell_entered(on: bool) -> void:
                 overrapping_cells.push_back(nearest_cell)
                 # 置けるかどうかの色を設定する
                 if nearest_cell.is_holder:
-                    nearest_cell.bg_color = Color(Color.GREEN, 0.2)
-                else:
-                    nearest_cell.bg_color = Color(Color.BLACK, 0.2)
+                    nearest_cell.bg_color = Cell.COLOR_SUCCESS
     _prev_overrapping_cells = overrapping_cells
-    print("overrapping_cells", overrapping_cells)
+    #print("overrapping_cells", overrapping_cells)
 
     if overrapping_cells.is_empty():
         can_drop = false
