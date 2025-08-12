@@ -15,6 +15,7 @@ _bg = NodePath("ColorRect")
 _area = NodePath("Area2D")
 
 [node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 mouse_filter = 2

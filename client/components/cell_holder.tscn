@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://cm6n8gwy5oxov" path="res://components/cell_holder.gd" id="1_n62l3"]
 [ext_resource type="PackedScene" uid="uid://davabsbnewlro" path="res://components/cell.tscn" id="2_df31j"]
 
-[node name="CellHolder" type="Control"]
+[node name="CellHolder" type="Control" node_paths=PackedStringArray("_cells_parent")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -11,6 +11,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_n62l3")
+_cells_parent = NodePath("GridContainer")
 
 [node name="GridContainer" type="GridContainer" parent="."]
 layout_mode = 0
