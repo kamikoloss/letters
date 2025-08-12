@@ -1,6 +1,6 @@
 class_name CellGroup
 extends Control
-## 呪文の文字群
+## 呪文オブジェクト
 
 ## Cell のシーン元
 @export var _cell_scene: PackedScene
@@ -13,7 +13,7 @@ var shape := []
 ## ドラッグできるかどうか
 var can_drag := true
 ## ドロップできるかどうか
-var can_drop := true
+var can_drop := false
 ## ドラッグ中かどうか
 var is_dragging := false
 
@@ -74,9 +74,8 @@ func _on_hovered(on: bool) -> void:
 
 
 func _on_dragged(on: bool) -> void:
-    print("_on_dragged(on: %s)" % [on])
+    #print("_on_dragged(on: %s)" % [on])
     is_dragging = on
-    # TODO: 自身の位置を調整する 全体の中央を算出するとか？
 
     # ドラッグを開始したとき
     if on:
@@ -92,6 +91,38 @@ func _on_dragged(on: bool) -> void:
 
 
 func _on_cell_entered(on: bool) -> void:
-    #print("_on_cell_entered(on: %s, area: %s)" % [on, area])
-    # TODO: 衝突先の cell 情報見る
-    can_drop = _cells.all(func(cell: Cell): return cell.can_drop)
+    #print("_on_cell_entered(on: %s)" % [on])
+    # この処理の発火タイミングとなる "他の Cell に 入った/外れた" タイミングで更新する
+    var overrapping_cells: Array[Cell] = [] # 重なっている Cell
+    for cell in _cells:
+        if cell is Cell:
+            # 自身を構成する Cell が重なっているホルダー Area の中で最寄りを取得する
+            var overrapping_areas := cell.area.get_overlapping_areas() # 重なっている Area[]
+            if overrapping_areas.is_empty():
+                continue
+            var nearest_area := overrapping_areas[0] # 最寄りの Area (現時点では候補)
+            var nearest_distance := INF # 最寄りの Area への距離 (現時点では候補)
+            for overrapping_area in overrapping_areas:
+                var distance := overrapping_area.global_position.distance_to(cell.global_position)
+                if distance < nearest_distance:
+                    nearest_area = overrapping_area
+                    nearest_distance = distance
+            # 最寄りのホルダー Area を元にホルダー Cell を取得する
+            var nearest_cell := nearest_area.get_parent()
+            if nearest_cell is Cell:
+                overrapping_cells.push_back(nearest_cell)
+                # 置けるかどうかの色を設定する
+                if nearest_cell.is_holder:
+                    nearest_cell.bg_color = Color(Color.GREEN, 0.2)
+                else:
+                    nearest_cell.bg_color = Color(Color.BLACK, 0.2)
+    print("overrapping_cells", overrapping_cells)
+
+    if overrapping_cells.is_empty():
+        can_drop = false
+    elif _cells.size() != overrapping_cells.size():
+        # TODO: なんかはみ出ても置けるときがある 外周におけない Holder を配置する？
+        can_drop = false
+    else:
+        # TODO: 1文字まで重ねられるようにする
+        can_drop = overrapping_cells.all(func(cell: Cell): return cell.letter == "")

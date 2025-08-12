@@ -1,11 +1,12 @@
 class_name Cell
 extends Control
 ## 呪文の1マス分 (= 1文字分)
-## 格納側もこのクラスの集まりで表現する
+## 呪文ホルダー側も呪文オブジェクト側もこのクラスの集まりで表現する
 
 ## マウスポインタが 入った/外れた とき
 signal hovered # (on: bool)
 ## ドラッグを 開始/終了 したとき
+## 呪文オブジェクト側のみ使用する
 signal dragged # (on: bool)
 ## 他の Cell に 入った/外れた とき
 signal cell_entered # (on: bool)
@@ -14,30 +15,34 @@ signal cell_entered # (on: bool)
 ## TODO: 決め打ちでいいのだろうか？
 const CELL_SIZE = Vector2(40, 40)
 
-## 格納側かどうか
-## true: 呪文格納側, false: 呪文側
+## 呪文ホルダー側かどうか
+## true: 呪文ホルダー側, false: 呪文オブジェクト側
 @export var is_holder := false
+@export var area: Area2D
 
 @export var _label: Label
 @export var _bg: ColorRect
-@export var _area: Area2D
 
-## ドロップできるかどうか (1マス分)
-var can_drop := false
-## 重なっている Area の数
-var _overlap_count := 0
 ## 呪文の1文字
 var letter := "":
     set(v):
         letter = v
         _label.text = v
+##
+var bg_color := Color(Color.BLUE, 0.2):
+    get():
+        return _bg.color
+    set(v):
+        _bg.color = v
 
 
 func _ready() -> void:
     mouse_entered.connect(_on_mouse_entered)
     mouse_exited.connect(_on_mouse_exited)
-    _area.area_entered.connect(_on_area_entered)
-    _area.area_exited.connect(_on_area_exited)
+    # Area の重なり: オブジェクト側のみ
+    if not is_holder:
+        area.area_entered.connect(_on_area_entered)
+        area.area_exited.connect(_on_area_exited)
 
 
 func _gui_input(event: InputEvent) -> void:
@@ -54,25 +59,9 @@ func _on_mouse_exited() -> void:
     hovered.emit(false)
 
 
-func _on_area_entered(area: Area2D) -> void:
-    # 侵入した分だけカウントを増やす
-    # TODO: 情報見る
-    _overlap_count += 1
-    _update_drop_state()
+func _on_area_entered(_other_area: Area2D) -> void:
+    cell_entered.emit(true)
 
 
-func _on_area_exited(area: Area2D) -> void:
-    # 退出した分だけカウントを減らす
-    _overlap_count = max(_overlap_count - 1, 0)
-    _update_drop_state()
-
-
-func _update_drop_state() -> void:
-    # 重なっている Area の数に応じて状態を更新する
-    can_drop = _overlap_count > 0
-    cell_entered.emit(can_drop)
-    if is_holder:
-        if can_drop:
-            _bg.color = Color(Color.GREEN, 0.2)
-        else:
-            _bg.color = Color(Color.BLACK, 0.2)
+func _on_area_exited(_other_area: Area2D) -> void:
+    cell_entered.emit(false)

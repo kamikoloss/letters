@@ -5,14 +5,14 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_e0bep"]
 radius = 15.0
 
-[node name="Cell" type="Control" node_paths=PackedStringArray("_label", "_bg", "_area")]
+[node name="Cell" type="Control" node_paths=PackedStringArray("area", "_label", "_bg")]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_e0bep")
+area = NodePath("Area2D")
 _label = NodePath("Label")
 _bg = NodePath("ColorRect")
-_area = NodePath("Area2D")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 0
