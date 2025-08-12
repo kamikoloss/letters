@@ -3,7 +3,6 @@
 [ext_resource type="Script" uid="uid://cqf7bt41oou48" path="res://components/cell.gd" id="1_e0bep"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_e0bep"]
-; セルの大きさに合わせた矩形の当たり判定
 size = Vector2(40, 40)
 
 [node name="Cell" type="Control" node_paths=PackedStringArray("_label", "_bg", "_area")]
@@ -33,9 +32,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Area2D" type="Area2D" parent="."]
-; ドロップ判定用の領域
 position = Vector2(20, 20)
-; 不要な衝突層を無効化
 collision_layer = 1
 collision_mask = 1
 
