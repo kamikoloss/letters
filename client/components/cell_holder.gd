@@ -10,4 +10,6 @@ var cells: Array[Cell]
 func _ready() -> void:
     for node in _cells_parent.get_children():
         if node is Cell:
+            node.is_holder = true
+            node.is_holder_active = true
             cells.push_back(node)

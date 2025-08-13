@@ -17,13 +17,13 @@ var can_drop := false
 ## ドラッグ中かどうか
 var is_dragging := false
 
-## 自身を構成する呪文の文字のリスト
+## 自身を構成する Cell のリスト
 var _cells: Array[Cell] = []
+## 自身の中央のオフセット
+var _center_offset: Vector2
 ## ドラッグを開始した座標
 var _drag_start_global_position: Vector2
-## 自身の中央の座標
-var _center_position: Vector2
-## 直前に重なっていた Cell のリスト
+## 直前に重なっていたホルダー Cell のリスト
 var _prev_overrapping_cells: Array[Cell] = []
 
 
@@ -34,7 +34,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
     # ドラッグ中の場合
     if is_dragging:
-        global_position = get_global_mouse_position() - _center_position
+        global_position = get_global_mouse_position() - _center_offset
 
 
 ## 呪文の文字列と形状を元に初期化する
@@ -59,8 +59,8 @@ func _init_cells() -> void:
                 cell.cell_entered.connect(_on_cell_entered)
             cell_x += Cell.CELL_SIZE.x
         cell_y += Cell.CELL_SIZE.y
-    # 自身の中央の座標を算出する
-    _center_position = Vector2(cell_x, cell_y) / 2
+    # 自身の中央のオフセットを算出する
+    _center_offset = Vector2(cell_x, cell_y) / 2
 
 
 func _on_hovered(on: bool) -> void:
@@ -87,7 +87,13 @@ func _on_dragged(on: bool) -> void:
         # ドロップできるとき
         # TODO: tween で移動する
         if can_drop:
+            # TODO: global でやると Holder が 20px ずれてたらずれる
             global_position = snapped(global_position, Cell.CELL_SIZE)
+            # 置いたホルダーを無効化する
+            # TODO: 1文字まで重ねられるようにする
+            for overrapping_cell in _prev_overrapping_cells:
+                overrapping_cell.is_holder_active = false
+        # ドロップできないとき: 元の座標に戻す
         else:
             global_position = _drag_start_global_position
 
@@ -100,6 +106,7 @@ func _on_cell_entered(on: bool) -> void:
     # 直前に重なっていた Cell の色を戻す
     for cell in _prev_overrapping_cells:
         if cell is Cell:
+            cell.is_holder_active = true
             cell.bg_color = Cell.COLOR_DEFAULT
     _prev_overrapping_cells.clear()
 
@@ -108,6 +115,7 @@ func _on_cell_entered(on: bool) -> void:
         if cell is Cell:
             # 自身を構成する Cell が重なっているホルダー Area の中で最寄りを取得する
             var overrapping_areas := cell.area.get_overlapping_areas() # 重なっている Area[]
+            # 重なっているホルダー Area がない場合: スキップ
             if overrapping_areas.is_empty():
                 continue
             var nearest_area := overrapping_areas[0] # 最寄りの Area (現時点では候補)
@@ -121,8 +129,8 @@ func _on_cell_entered(on: bool) -> void:
             var nearest_cell := nearest_area.get_parent()
             if nearest_cell is Cell:
                 overrapping_cells.push_back(nearest_cell)
-                # 置けるかどうかの色を設定する
-                if nearest_cell.is_holder:
+                # ホルダーに置けるかどうかの色を設定する
+                if nearest_cell.is_holder and nearest_cell.is_holder_active:
                     nearest_cell.bg_color = Cell.COLOR_SUCCESS
     _prev_overrapping_cells = overrapping_cells
     #print("overrapping_cells", overrapping_cells)
@@ -130,8 +138,7 @@ func _on_cell_entered(on: bool) -> void:
     if overrapping_cells.is_empty():
         can_drop = false
     elif _cells.size() != overrapping_cells.size():
-        # TODO: なんかはみ出ても置けるときがある 外周におけない Holder を配置する？
+        # TODO: なんかはみ出ても置けることがある？外周におけない Holder を配置する？
         can_drop = false
     else:
-        # TODO: 1文字まで重ねられるようにする
-        can_drop = overrapping_cells.all(func(cell: Cell): return cell.letter == "")
+        can_drop = overrapping_cells.all(func(cell: Cell): return cell.is_holder_active)

@@ -19,13 +19,17 @@ const COLOR_DEFAULT = Color(Color.BLACK, 0.2)
 const COLOR_SUCCESS = Color(Color.GREEN, 0.2)
 const COLOR_DANGER = Color(Color.RED, 0.2)
 
-## 呪文ホルダー側かどうか
-## true: 呪文ホルダー側, false: 呪文オブジェクト側
-@export var is_holder := false
 @export var area: Area2D
 
 @export var _label: Label
 @export var _bg: ColorRect
+
+## 呪文ホルダー側かどうか
+## true: 呪文ホルダー側, false: 呪文オブジェクト側
+var is_holder := false
+## 呪文ホルダーとして有効かどうか
+## 呪文オブジェクトが置かれたあとや表示用では無効になる
+var is_holder_active := false
 
 ## 呪文の1文字
 var letter := "":
