@@ -25,6 +25,8 @@ var _center_offset: Vector2
 var _drag_start_global_position: Vector2
 ## 直前に重なっていたホルダー Cell のリスト
 var _prev_overrapping_cells: Array[Cell] = []
+## 現在配置されているホルダー Cell のリスト
+var _placed_cells: Array[Cell] = []
 
 
 func _ready() -> void:
@@ -86,8 +88,8 @@ func _on_dragged(on: bool) -> void:
         # ドラッグを開始した座標を保持しておく
         _drag_start_global_position = global_position
         # 配置していたホルダーを有効に戻す
-        for overrapping_cell in _prev_overrapping_cells:
-            overrapping_cell.is_holder_active = true
+        for placed_cell in _placed_cells:
+            placed_cell.is_holder_active = true
     # ドラッグを終了したとき
     else:
         # ドロップできるとき
@@ -100,6 +102,7 @@ func _on_dragged(on: bool) -> void:
             for overrapping_cell in _prev_overrapping_cells:
                 overrapping_cell.is_holder_active = false
                 overrapping_cell.bg_color = Cell.COLOR_DEFAULT
+            _placed_cells = _prev_overrapping_cells.duplicate() # 配置したホルダーを保持する
         # ドロップできないとき
         else:
             # オブジェクトをドラッグ開始時の座標に戻す
@@ -108,6 +111,9 @@ func _on_dragged(on: bool) -> void:
             # ホルダーの色を元に戻す
             for overrapping_cell in _prev_overrapping_cells:
                 overrapping_cell.bg_color = Cell.COLOR_DEFAULT
+            # 元の位置に戻ったので配置していたホルダーを無効に戻す
+            for placed_cell in _placed_cells:
+                placed_cell.is_holder_active = false
 
 
 func _on_cell_entered(on: bool) -> void:
