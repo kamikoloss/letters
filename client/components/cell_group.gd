@@ -91,8 +91,7 @@ func _on_dragged(on: bool) -> void:
         # ドロップできるとき
         if can_drop:
             # TODO: tween で移動する
-            # TODO: global でやると Holder が 20px ずれてたらずれる
-            global_position = snapped(global_position, Cell.CELL_SIZE)
+            global_position = _prev_overrapping_cells[0].global_position
             # 置いたホルダーを無効化する
             # TODO: 1文字まで重ねられるようにする
             for overrapping_cell in _prev_overrapping_cells:
