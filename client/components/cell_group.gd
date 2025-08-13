@@ -85,17 +85,13 @@ func _on_dragged(on: bool) -> void:
     if on:
         # ドラッグを開始した座標を保持しておく
         _drag_start_global_position = global_position
-        # 置いていたホルダーを有効化する
-        # TODO: 1文字まで重ねられるようにする
-        for overrapping_cell in _prev_overrapping_cells:
-            overrapping_cell.is_holder_active = true
+        # 以前に重なっていたホルダーはここでは有効化しない
     # ドラッグを終了したとき
     else:
         # ドロップできるとき
         if can_drop:
             # TODO: tween で移動する
-            # TODO: global でやると Holder が 20px ずれてたらずれる
-            global_position = snapped(global_position, Cell.CELL_SIZE)
+            global_position = _prev_overrapping_cells[0].global_position
             # 置いたホルダーを無効化する
             # TODO: 1文字まで重ねられるようにする
             for overrapping_cell in _prev_overrapping_cells:
@@ -111,6 +107,9 @@ func _on_cell_entered(on: bool) -> void:
     #print("_on_cell_entered(on: %s)" % [on])
     # この処理の発火タイミングとなる "他の Cell に 入った/外れた" タイミングで更新する
     # TODO: マス目分見てるので一気に複数発火する？まあいいか
+
+    if not is_dragging:
+        return # ドラッグ中でなければ処理しない
 
     # 直前に重なっていた Cell の色を戻す
     for cell in _prev_overrapping_cells:
