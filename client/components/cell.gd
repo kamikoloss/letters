@@ -36,6 +36,8 @@ var is_holder_active := false:
     set(v):
         is_holder_active = v
         _update_debug()
+        # 有効状態が変わったら色を初期化する
+        bg_color = COLOR_DEFAULT
 
 ## 呪文の1文字
 var letter := "":
@@ -53,10 +55,9 @@ var bg_color := COLOR_DEFAULT:
 func _ready() -> void:
     mouse_entered.connect(_on_mouse_entered)
     mouse_exited.connect(_on_mouse_exited)
-    # Area の重なり: オブジェクト側のみ
-    if not is_holder:
-        area.area_entered.connect(_on_area_entered)
-        area.area_exited.connect(_on_area_exited)
+    # ホルダー側も重なりを検知するため常に接続する
+    area.area_entered.connect(_on_area_entered)
+    area.area_exited.connect(_on_area_exited)
 
     bg_color = COLOR_DEFAULT
 
@@ -76,11 +77,61 @@ func _on_mouse_exited() -> void:
 
 
 func _on_area_entered(_other_area: Area2D) -> void:
-    cell_entered.emit(true)
+    if is_holder:
+        # 重なり状態に応じて色を更新する
+        _update_holder_color()
+    else:
+        cell_entered.emit(true)
 
 
 func _on_area_exited(_other_area: Area2D) -> void:
-    cell_entered.emit(false)
+    if is_holder:
+        # 重なり状態に応じて色を更新する
+        _update_holder_color()
+    else:
+        cell_entered.emit(false)
+
+
+## 重なり状態に応じてホルダーの色を更新する
+func _update_holder_color() -> void:
+    var overrapping_areas := area.get_overlapping_areas()
+    var updated := false
+    for overrapping_area in overrapping_areas:
+        var other_cell := overrapping_area.get_parent()
+        if other_cell is Cell:
+            var nearest_cell := other_cell.get_nearest_overrapping_holder()
+            if nearest_cell == self:
+                # 置けるかどうかで色を分ける
+                if is_holder_active:
+                    bg_color = COLOR_SUCCESS
+                else:
+                    bg_color = COLOR_DANGER
+                updated = true
+                break
+    if not updated:
+        # 重なる Cell がないときは色を元に戻す
+        bg_color = COLOR_DEFAULT
+
+
+## 自身に重なっているホルダー Cell のうち最寄りを取得する
+## 重なっているホルダー Cell がない場合は null を返す
+func get_nearest_overrapping_holder() -> Cell:
+    var overrapping_areas := area.get_overlapping_areas()
+    if overrapping_areas.is_empty():
+        return null
+
+    var nearest_area := overrapping_areas[0]
+    var nearest_distance := INF
+    for overrapping_area in overrapping_areas:
+        var distance := overrapping_area.global_position.distance_to(global_position)
+        if distance < nearest_distance:
+            nearest_area = overrapping_area
+            nearest_distance = distance
+
+    var nearest_cell := nearest_area.get_parent()
+    if nearest_cell is Cell:
+        return nearest_cell
+    return null
 
 
 func _update_debug() -> void:
