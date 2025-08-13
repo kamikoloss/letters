@@ -160,5 +160,6 @@ func _on_cell_entered(on: bool) -> void:
         # TODO: なんかはみ出ても置けることがある？外周におけない Holder を配置する？
         can_drop = false
         return
-    # 
+    # 配置処理は _on_dragged でやる
+    # ここではドロップできるかできないかの判断のみ行う
     can_drop = overrapping_cells.all(func(cell: Cell): return cell.is_holder_active)
