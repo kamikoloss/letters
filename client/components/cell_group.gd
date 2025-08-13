@@ -112,9 +112,9 @@ func _on_cell_entered(on: bool) -> void:
         return # ドラッグ中でなければ処理しない
 
     # 直前に重なっていた Cell の色を戻す
+    # is_holder_active を変更すると無効なセルが再び有効になってしまうため、色のみを戻す
     for cell in _prev_overrapping_cells:
         if cell is Cell:
-            cell.is_holder_active = true
             cell.bg_color = Cell.COLOR_DEFAULT
     _prev_overrapping_cells.clear()
 
