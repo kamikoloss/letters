@@ -85,22 +85,29 @@ func _on_dragged(on: bool) -> void:
     if on:
         # ドラッグを開始した座標を保持しておく
         _drag_start_global_position = global_position
-        # 以前に重なっていたホルダーはここでは有効化しない
+        # 配置していたホルダーを有効に戻す
+        for overrapping_cell in _prev_overrapping_cells:
+            overrapping_cell.is_holder_active = true
     # ドラッグを終了したとき
     else:
         # ドロップできるとき
         if can_drop:
+            # オブジェクトを配置する
             # TODO: tween で移動する
             global_position = _prev_overrapping_cells[0].global_position
-            # 置いたホルダーを無効化する
+            # 置いたホルダーを無効にする
             # TODO: 1文字まで重ねられるようにする
             for overrapping_cell in _prev_overrapping_cells:
                 overrapping_cell.is_holder_active = false
                 overrapping_cell.bg_color = Cell.COLOR_DEFAULT
-        # ドロップできないとき: 元の座標に戻す
+        # ドロップできないとき
         else:
+            # オブジェクトをドラッグ開始時の座標に戻す
             # TODO: tween で移動する
             global_position = _drag_start_global_position
+            # ホルダーの色を元に戻す
+            for overrapping_cell in _prev_overrapping_cells:
+                overrapping_cell.bg_color = Cell.COLOR_DEFAULT
 
 
 func _on_cell_entered(on: bool) -> void:
