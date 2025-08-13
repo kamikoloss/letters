@@ -78,11 +78,16 @@ func _on_mouse_exited() -> void:
 
 func _on_area_entered(_other_area: Area2D) -> void:
     if is_holder:
-        # 置けるかどうかで色を分ける
-        if is_holder_active:
-            bg_color = COLOR_SUCCESS
-        else:
-            bg_color = COLOR_DANGER
+        var other_cell := _other_area.get_parent()
+        if other_cell is Cell:
+            # 自身が最寄りのホルダー Cell のときのみ色を変更する
+            var nearest_cell := other_cell.get_nearest_overrapping_holder()
+            if nearest_cell == self:
+                # 置けるかどうかで色を分ける
+                if is_holder_active:
+                    bg_color = COLOR_SUCCESS
+                else:
+                    bg_color = COLOR_DANGER
     else:
         cell_entered.emit(true)
 
@@ -93,6 +98,27 @@ func _on_area_exited(_other_area: Area2D) -> void:
         bg_color = COLOR_DEFAULT
     else:
         cell_entered.emit(false)
+
+
+## 自身に重なっているホルダー Cell のうち最寄りを取得する
+## 重なっているホルダー Cell がない場合は null を返す
+func get_nearest_overrapping_holder() -> Cell:
+    var overrapping_areas := area.get_overlapping_areas()
+    if overrapping_areas.is_empty():
+        return null
+
+    var nearest_area := overrapping_areas[0]
+    var nearest_distance := INF
+    for overrapping_area in overrapping_areas:
+        var distance := overrapping_area.global_position.distance_to(global_position)
+        if distance < nearest_distance:
+            nearest_area = overrapping_area
+            nearest_distance = distance
+
+    var nearest_cell := nearest_area.get_parent()
+    if nearest_cell is Cell:
+        return nearest_cell
+    return null
 
 
 func _update_debug() -> void:

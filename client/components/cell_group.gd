@@ -118,25 +118,12 @@ func _on_cell_entered(on: bool) -> void:
     # 色のリセットは Cell 側で行うためここでは不要
     _prev_overrapping_cells.clear()
 
-    # 自身の Cell ごとに重なっているホルダー Area を取得する
+    # 自身の Cell ごとに重なっている最寄りのホルダー Cell を取得する
     var overrapping_cells: Array[Cell] = [] # 重なっている Cell
     for cell in cells:
         if cell is Cell:
-            # 自身を構成する Cell が重なっているホルダー Area の中で最寄りを取得する
-            var overrapping_areas := cell.area.get_overlapping_areas() # 重なっている Area[]
-            # 重なっているホルダー Area がない場合: スキップ
-            if overrapping_areas.is_empty():
-                continue
-            var nearest_area := overrapping_areas[0] # 最寄りの Area (現時点では候補)
-            var nearest_distance := INF # 最寄りの Area への距離 (現時点では候補)
-            for overrapping_area in overrapping_areas:
-                var distance := overrapping_area.global_position.distance_to(cell.global_position)
-                if distance < nearest_distance:
-                    nearest_area = overrapping_area
-                    nearest_distance = distance
-            # 最寄りのホルダー Area を元にホルダー Cell を取得する
-            var nearest_cell := nearest_area.get_parent()
-            if nearest_cell is Cell:
+            var nearest_cell := cell.get_nearest_overrapping_holder()
+            if nearest_cell:
                 overrapping_cells.push_back(nearest_cell)
     _prev_overrapping_cells = overrapping_cells
     #print("overrapping_cells", overrapping_cells)
