@@ -8,7 +8,7 @@ signal hovered # (on: bool)
 ## ドラッグを 開始/終了 したとき
 ## 呪文オブジェクト側のみ使用する
 signal dragged # (on: bool)
-## 他の Cell に 入った/外れた とき
+## 他の Cell が 入った/外れた とき
 signal cell_entered # (on: bool)
 
 ## Cell の大きさ (px)
@@ -68,38 +68,6 @@ func _gui_input(event: InputEvent) -> void:
             dragged.emit(event.pressed)
 
 
-func _on_mouse_entered() -> void:
-    hovered.emit(true)
-
-
-func _on_mouse_exited() -> void:
-    hovered.emit(false)
-
-
-func _on_area_entered(_other_area: Area2D) -> void:
-    if is_holder:
-        var other_cell := _other_area.get_parent()
-        if other_cell is Cell:
-            # 自身が最寄りのホルダー Cell のときのみ色を変更する
-            var nearest_cell := other_cell.get_nearest_overrapping_holder()
-            if nearest_cell == self:
-                # 置けるかどうかで色を分ける
-                if is_holder_active:
-                    bg_color = COLOR_SUCCESS
-                else:
-                    bg_color = COLOR_DANGER
-    else:
-        cell_entered.emit(true)
-
-
-func _on_area_exited(_other_area: Area2D) -> void:
-    if is_holder:
-        # 重なりがなくなったら元の色に戻す
-        bg_color = COLOR_DEFAULT
-    else:
-        cell_entered.emit(false)
-
-
 ## 自身に重なっているホルダー Cell のうち最寄りを取得する
 ## 重なっているホルダー Cell がない場合は null を返す
 func get_nearest_overrapping_holder() -> Cell:
@@ -119,6 +87,40 @@ func get_nearest_overrapping_holder() -> Cell:
     if nearest_cell is Cell:
         return nearest_cell
     return null
+
+
+
+func _on_mouse_entered() -> void:
+    hovered.emit(true)
+
+
+func _on_mouse_exited() -> void:
+    hovered.emit(false)
+
+
+func _on_area_entered(_other_area: Area2D) -> void:
+    if is_holder:
+        var other_cell := _other_area.get_parent()
+        if other_cell is Cell:
+            # 自身が最寄りのホルダー Cell のときのみ色を変更する
+            #var nearest_cell := other_cell.get_nearest_overrapping_holder()
+            var nearest_cell = other_cell.get_nearest_overrapping_holder()
+            if nearest_cell is Cell:
+                # 置けるかどうかで色を分ける
+                if is_holder_active:
+                    bg_color = COLOR_SUCCESS
+                else:
+                    bg_color = COLOR_DANGER
+    else:
+        cell_entered.emit(true)
+
+
+func _on_area_exited(_other_area: Area2D) -> void:
+    if is_holder:
+        # 重なりがなくなったら元の色に戻す
+        bg_color = COLOR_DEFAULT
+    else:
+        cell_entered.emit(false)
 
 
 func _update_debug() -> void:
