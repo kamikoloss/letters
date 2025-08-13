@@ -98,16 +98,13 @@ func _on_dragged(on: bool) -> void:
             # 置いたホルダーを無効にする
             # TODO: 1文字まで重ねられるようにする
             for overrapping_cell in _prev_overrapping_cells:
-                overrapping_cell.is_holder_active = false
-                overrapping_cell.bg_color = Cell.COLOR_DEFAULT
+                overrapping_cell.is_holder_active = false # 色は Cell 側で自動リセット
         # ドロップできないとき
         else:
             # オブジェクトをドラッグ開始時の座標に戻す
             # TODO: tween で移動する
             global_position = _drag_start_global_position
-            # ホルダーの色を元に戻す
-            for overrapping_cell in _prev_overrapping_cells:
-                overrapping_cell.bg_color = Cell.COLOR_DEFAULT
+            # ホルダーの色リセットは Cell 側で自動化されている
 
 
 func _on_cell_entered(on: bool) -> void:
@@ -118,11 +115,7 @@ func _on_cell_entered(on: bool) -> void:
     if not is_dragging:
         return # ドラッグ中でなければ処理しない
 
-    # 直前に重なっていた Cell の色を戻す
-    # is_holder_active を変更すると無効なセルが再び有効になってしまうため、色のみを戻す
-    for cell in _prev_overrapping_cells:
-        if cell is Cell:
-            cell.bg_color = Cell.COLOR_DEFAULT
+    # 色のリセットは Cell 側で行うためここでは不要
     _prev_overrapping_cells.clear()
 
     # 自身の Cell ごとに重なっているホルダー Area を取得する
@@ -145,9 +138,6 @@ func _on_cell_entered(on: bool) -> void:
             var nearest_cell := nearest_area.get_parent()
             if nearest_cell is Cell:
                 overrapping_cells.push_back(nearest_cell)
-                # ホルダーに置けるかどうかの色を設定する
-                if nearest_cell.is_holder and nearest_cell.is_holder_active:
-                    nearest_cell.bg_color = Cell.COLOR_SUCCESS
     _prev_overrapping_cells = overrapping_cells
     #print("overrapping_cells", overrapping_cells)
 

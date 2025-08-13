@@ -36,6 +36,8 @@ var is_holder_active := false:
     set(v):
         is_holder_active = v
         _update_debug()
+        # 有効状態が変わったら色を初期化する
+        bg_color = COLOR_DEFAULT
 
 ## 呪文の1文字
 var letter := "":
@@ -53,10 +55,9 @@ var bg_color := COLOR_DEFAULT:
 func _ready() -> void:
     mouse_entered.connect(_on_mouse_entered)
     mouse_exited.connect(_on_mouse_exited)
-    # Area の重なり: オブジェクト側のみ
-    if not is_holder:
-        area.area_entered.connect(_on_area_entered)
-        area.area_exited.connect(_on_area_exited)
+    # ホルダー側も重なりを検知するため常に接続する
+    area.area_entered.connect(_on_area_entered)
+    area.area_exited.connect(_on_area_exited)
 
     bg_color = COLOR_DEFAULT
 
@@ -76,11 +77,22 @@ func _on_mouse_exited() -> void:
 
 
 func _on_area_entered(_other_area: Area2D) -> void:
-    cell_entered.emit(true)
+    if is_holder:
+        # 置けるかどうかで色を分ける
+        if is_holder_active:
+            bg_color = COLOR_SUCCESS
+        else:
+            bg_color = COLOR_DANGER
+    else:
+        cell_entered.emit(true)
 
 
 func _on_area_exited(_other_area: Area2D) -> void:
-    cell_entered.emit(false)
+    if is_holder:
+        # 重なりがなくなったら元の色に戻す
+        bg_color = COLOR_DEFAULT
+    else:
+        cell_entered.emit(false)
 
 
 func _update_debug() -> void:
