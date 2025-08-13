@@ -107,6 +107,7 @@ func _on_dragged(on: bool) -> void:
             global_position = _drag_start_global_position
             # ホルダーの色を元に戻す
             for overrapping_cell in _prev_overrapping_cells:
+                overrapping_cell.is_holder_active = false # ドロップに失敗したのでホルダーを無効に戻す
                 overrapping_cell.bg_color = Cell.COLOR_DEFAULT
 
 
