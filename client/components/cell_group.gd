@@ -5,6 +5,8 @@ extends Control
 ## Cell のシーン元
 @export var _cell_scene: PackedScene
 
+## 自身を構成する Cell のリスト
+var cells: Array[Cell] = []
 ## 呪文の文字列
 var letters := ""
 ## 呪文の形を表現する二次元配列 (1 = セルあり, 0 = セルなし)
@@ -17,8 +19,6 @@ var can_drop := false
 ## ドラッグ中かどうか
 var is_dragging := false
 
-## 自身を構成する Cell のリスト
-var _cells: Array[Cell] = []
 ## 自身の中央のオフセット
 var _center_offset: Vector2
 ## ドラッグを開始した座標
@@ -50,8 +50,10 @@ func _init_cells() -> void:
                 var cell: Cell = _cell_scene.instantiate()
                 cell.position = Vector2(cell_x, cell_y)
                 cell.letter = letters[index]
+                cell.is_holder = false
+                cell.is_holder_active = false
                 add_child(cell)
-                _cells.push_back(cell)
+                cells.push_back(cell)
                 index += 1
                 # Cell の signal に接続する
                 cell.hovered.connect(_on_hovered)
@@ -68,7 +70,7 @@ func _on_hovered(on: bool) -> void:
         return
 
     #print("_on_hovered(on: %s)" % [on])
-    for cell in _cells:
+    for cell in cells:
         if on:
             cell.modulate = Color(1, 1, 1, 0.6)
         else:
@@ -81,20 +83,27 @@ func _on_dragged(on: bool) -> void:
 
     # ドラッグを開始したとき
     if on:
+        # ドラッグを開始した座標を保持しておく
         _drag_start_global_position = global_position
+        # 置いていたホルダーを有効化する
+        # TODO: 1文字まで重ねられるようにする
+        for overrapping_cell in _prev_overrapping_cells:
+            overrapping_cell.is_holder_active = true
     # ドラッグを終了したとき
     else:
         # ドロップできるとき
-        # TODO: tween で移動する
         if can_drop:
+            # TODO: tween で移動する
             # TODO: global でやると Holder が 20px ずれてたらずれる
             global_position = snapped(global_position, Cell.CELL_SIZE)
             # 置いたホルダーを無効化する
             # TODO: 1文字まで重ねられるようにする
             for overrapping_cell in _prev_overrapping_cells:
                 overrapping_cell.is_holder_active = false
+                overrapping_cell.bg_color = Cell.COLOR_DEFAULT
         # ドロップできないとき: 元の座標に戻す
         else:
+            # TODO: tween で移動する
             global_position = _drag_start_global_position
 
 
@@ -110,8 +119,9 @@ func _on_cell_entered(on: bool) -> void:
             cell.bg_color = Cell.COLOR_DEFAULT
     _prev_overrapping_cells.clear()
 
+    # 自身の Cell ごとに重なっているホルダー Area を取得する
     var overrapping_cells: Array[Cell] = [] # 重なっている Cell
-    for cell in _cells:
+    for cell in cells:
         if cell is Cell:
             # 自身を構成する Cell が重なっているホルダー Area の中で最寄りを取得する
             var overrapping_areas := cell.area.get_overlapping_areas() # 重なっている Area[]
@@ -135,10 +145,14 @@ func _on_cell_entered(on: bool) -> void:
     _prev_overrapping_cells = overrapping_cells
     #print("overrapping_cells", overrapping_cells)
 
+    # 重なっているホルダー Cell がない場合: ドロップ不可
     if overrapping_cells.is_empty():
         can_drop = false
-    elif _cells.size() != overrapping_cells.size():
+        return
+    # すべての Cell が重なっていいない場合: ドロップ不可
+    if cells.size() != overrapping_cells.size():
         # TODO: なんかはみ出ても置けることがある？外周におけない Holder を配置する？
         can_drop = false
-    else:
-        can_drop = overrapping_cells.all(func(cell: Cell): return cell.is_holder_active)
+        return
+    # 
+    can_drop = overrapping_cells.all(func(cell: Cell): return cell.is_holder_active)

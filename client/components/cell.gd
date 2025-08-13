@@ -26,10 +26,16 @@ const COLOR_DANGER = Color(Color.RED, 0.2)
 
 ## 呪文ホルダー側かどうか
 ## true: 呪文ホルダー側, false: 呪文オブジェクト側
-var is_holder := false
+var is_holder := false:
+    set(v):
+        is_holder = v
+        _update_debug()
 ## 呪文ホルダーとして有効かどうか
 ## 呪文オブジェクトが置かれたあとや表示用では無効になる
-var is_holder_active := false
+var is_holder_active := false:
+    set(v):
+        is_holder_active = v
+        _update_debug()
 
 ## 呪文の1文字
 var letter := "":
@@ -75,3 +81,11 @@ func _on_area_entered(_other_area: Area2D) -> void:
 
 func _on_area_exited(_other_area: Area2D) -> void:
     cell_entered.emit(false)
+
+
+func _update_debug() -> void:
+    var is_holder_active_lamp: ColorRect = get_node("Debug/is_holder_active")
+    if is_holder:
+        is_holder_active_lamp.color = Color.GREEN if is_holder_active else Color.RED
+    else:
+        is_holder_active_lamp.visible = false

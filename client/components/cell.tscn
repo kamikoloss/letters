@@ -37,3 +37,11 @@ position = Vector2(20, 20)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 shape = SubResource("CircleShape2D_e0bep")
+
+[node name="Debug" type="Control" parent="."]
+modulate = Color(1, 1, 1, 0.2)
+anchors_preset = 0
+
+[node name="is_holder_active" type="ColorRect" parent="Debug"]
+offset_right = 5.0
+offset_bottom = 5.0
