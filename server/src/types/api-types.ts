@@ -1,22 +1,5 @@
-import type { KVNamespace } from "@cloudflare/workers-types"
-import { ActionType } from "./enums"
-
+import { Action } from '.'
 // TODO: 選択肢は enum[] にする？
-
-/**
- * Cloudflare Binding 設定
- */
-export interface CloudflareBindings {
-  USERS: KVNamespace
-  SESSIONS: KVNamespace
-}
-
-/**
- * n ターン目に起きたこと
- */
-export interface Action {
-  actionType: ActionType // 動作タイプ
-}
 
 /**
  * ゲーム開始 API リクエスト
