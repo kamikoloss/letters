@@ -22,6 +22,7 @@ export interface StartSessionResponse {
  * バトル開始 リクエスト
  */
 export interface StartBattleRequest {
+  sessionId: string // セッション ID
   terms: number[] // 名辞の選択肢
 }
 
