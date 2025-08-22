@@ -11,8 +11,17 @@ export interface CloudflareBindings {
 }
 
 /**
+ * アクション
  * n ターン目に起きたこと
  */
 export interface Action {
   actionType: ActionType // 動作タイプ
+}
+
+/**
+ * 名辞
+ */
+export interface Term {
+  id: number // 名辞 ID
+  position: number[] // 座標 [x, y]
 }
