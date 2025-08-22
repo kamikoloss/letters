@@ -41,7 +41,7 @@ export interface StartBattleResponse {
  * 名辞選択肢リロール API リクエスト
  */
 export interface RerollTermsRequest {
-  // 送信することない？
+  sessionId: string // セッション識別子
 }
 
 /**
