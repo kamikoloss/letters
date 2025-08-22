@@ -3,17 +3,17 @@ import type { Action } from '.'
 // TODO: 選択肢は enum[] にする？
 
 /**
- * ゲーム開始 リクエスト
+ * セッション開始 リクエスト
  */
-export interface StartGameRequest {
+export interface StartSessionRequest {
   golemName: number[] // ゴーレム名
   userId: string // User.id
 }
 
 /**
- * ゲーム開始 レスポンス
+ * セッション開始 レスポンス
  */
-export interface StartGameResponse {
+export interface StartSessionResponse {
   sessionId: string // セッション ID
   terms: number[] // 名辞の選択肢
 }
