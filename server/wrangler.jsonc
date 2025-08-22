@@ -2,19 +2,30 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "letters",
   "main": "src/index.ts",
-  "compatibility_date": "2025-08-19"
+  "compatibility_date": "2025-08-19",
   // "compatibility_flags": [
   //   "nodejs_compat"
   // ],
   // "vars": {
   //   "MY_VAR": "my-variable"
   // },
-  // "kv_namespaces": [
-  //   {
-  //     "binding": "MY_KV_NAMESPACE",
-  //     "id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-  //   }
-  // ],
+  "kv_namespaces": [
+    {
+      "binding": "USERS",
+      "id": "cf845e6a709448878efb8b9f2cd4843a",
+      "experimental_remote": true,
+    },
+    {
+      "binding": "GOLEMS",
+      "id": "18b1b3c635b24d3e98702163bb9083ee",
+      "experimental_remote": true,
+    },
+    {
+      "binding": "SESSIONS",
+      "id": "3de73b164f2b4a7394ec886c9495232e",
+      "experimental_remote": true,
+    },
+  ],
   // "r2_buckets": [
   //   {
   //     "binding": "MY_BUCKET",
