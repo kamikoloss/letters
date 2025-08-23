@@ -49,27 +49,55 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = /*html*/ `
     <div>
       <h2>Field</h2>
       <div id="field" class="grid-field"></div>
-      <div>Turn: <span id="battle-turn">x</span></div>
+      <div>
+        <div>Session ID: <span id="session-id">xxxx</span></div>
+        <div>Phase: <span id="session-phase">9999</span></div>
+        <div>Turn: <span id="session-turn">9999</span></div>
+      </div>
     </div>
     <div>
       <h2>You</h2>
       <div id="terms-you" class="grid-terms"></div>
-      <div>HP: <span id="you-hp">x</span></div>
+      <div>
+        <div>User ID: <span id="you-user-id">xxxx</span></div>
+        <div>Golem ID: <span id="you-golem-id">xxxx</span></div>
+        <div>Rate: <span id="you-rate">9999</span></div>
+        <div>HP: <span id="you-hp">9999</span></div>
+        <div>GD: <span id="you-gd">9999</span></div>
+      </div>
     </div>
     <div>
       <h2>Enemy</h2>
       <div id="terms-enemy" class="grid-terms"></div>
-      <div>HP: <span id="enemy-hp">x</span></div>
+      <div>
+        <div>User ID: <span id="enemy-user-id">xxxx</span></div>
+        <div>Golem ID: <span id="enemy-golem-id">xxxx</span></div>
+        <div>Rate: <span id="enemy-rate">9999</span></div>
+        <div>HP: <span id="enemy-hp">9999</span></div>
+        <div>GD: <span id="enemy-gd">9999</span></div>
+      </div>
     </div>
   </div>
   <div class="my-4">
     <h2>API</h2>
-    <div>
-      <input type="text" />
-      <button id="register-user" type="button">register-user</button>
+    <div class="flex gap-x-4">
+      <div class="w-32">
+        <button id="register-user" type="button" class="w-full">register-user</button>
+      </div>
+      <div class="w-32">
+        <button id="start-session" type="button" class="w-full">start-session</button>
+        <div>User ID</div>
+        <input type="text" class="w-full" />
+      </div>
+      <div class="w-32">
+        <button id="start-battle" type="button" class="w-full">start-battle</button>
+        <div>Terms</div>
+        <textarea rows="6" class="w-full"></textarea>
+      </div>
+      <div class="w-32">
+        <button id="reroll-terms" type="button" class="w-full">reroll-terms</button>
+      </div>
     </div>
-    <button id="start-session" type="button">start-session</button>
-    <button id="start-battle" type="button">start-battle</button>
   </div>
 </main>
 <footer>
