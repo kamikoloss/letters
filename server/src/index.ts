@@ -6,8 +6,8 @@ import type {
   StartSessionRequest,
   StartSessionResponse,
 } from './types/api-types'
+import type { Golem, Session, User } from './types/db-types'
 import { getRandomTerms, getUnixtimeDesc } from './utils'
-import type { Golem, Session } from './types/db-types'
 
 type Env = {
   Bindings: CloudflareBindings
@@ -20,23 +20,34 @@ app.get('/', (c) => {
 })
 
 /**
+ * ユーザー登録
+ */
+app.post('/api/register_user', async (c) => {
+})
+
+/**
  * セッション開始
  */
 app.post('/api/start-session', async (c) => {
   const req = await c.req.parseBody<StartSessionRequest>()
+  const phase = 0
+
+  // ユーザーデータを取得する
+  const user = await c.env.SESSIONS.get<User>(req.userId, 'json')
+  if (user === null) return c.json({ error: 'user is not found.' })
 
   // 名辞の選択肢を抽選する
   const randomTerms = getRandomTerms()
 
   // ゴーレムデータを作成する
-  const golemKey = `0:X:${getUnixtimeDesc()}`
+  const golemKey = `${phase}:X:${getUnixtimeDesc()}`
   const golem: Golem = {
     loseCount: 0,
-    name: [], // TODO
+    //name: [],
     terms: [],
     userId: req.userId,
-    userNames: [], // TODO
-    version: '', // TODO
+    //userNames: [],
+    //version: '',
     winCount: 0,
   }
   c.env.SESSIONS.put(golemKey, JSON.stringify(golem))
@@ -45,9 +56,10 @@ app.post('/api/start-session', async (c) => {
   const sessionKey = `${req.userId}:${getUnixtimeDesc()}`
   const session: Session = {
     latestGolemId: golemKey,
-    latestTerms: randomTerms,
-    phase: 0,
-    termsHistory: [randomTerms],
+    latestTermIds: randomTerms,
+    phase: phase,
+    //remainingMoney: 100,
+    //termsHistory: [randomTerms],
     userId: req.userId,
   }
   c.env.SESSIONS.put(sessionKey, JSON.stringify(session))
@@ -72,7 +84,7 @@ app.post('/api/start-battle', async (c) => {
 
   // ゴーレムデータを取得する
   const golem = await c.env.GOLEMS.get<Golem>(session.latestGolemId, 'json')
-  if (session === null) return c.json({ error: 'session is not found.' })
+  if (session === null) return c.json({ error: 'golem is not found.' })
 
   // TODO: 対戦相手のゴーレムを抽選する
 
@@ -94,6 +106,7 @@ app.post('/api/start-battle', async (c) => {
     terms: [],
     winCount: 0,
   }
+  return c.json(res)
 })
 
 /**

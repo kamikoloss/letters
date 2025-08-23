@@ -1,12 +1,13 @@
 import type { Action, Term } from '.'
-// TODO: 名辞は座標もいる
 
 /**
  * ユーザー
+ * 
+ * key: 
  */
 export interface User {
-  name: number[] // ユーザー名
-  rate: number // レーティング
+  //name: number[] // ユーザー名
+  rate: number // レート
 }
 
 /**
@@ -15,16 +16,16 @@ export interface User {
  * フェーズごとのスナップショット
  * 対戦相手の検索に使用する
  * 
- * key: "<phase>:<User.rate>:<unixtimeDesc>"
+ * key: "<phase>:<レートクラス>:<unixtimeDesc>:<randomString>"
  * TODO: 複数キャラ対応時にキャラごとのレートにする
  */
 export interface Golem {
   loseCount: number // 敗北数
-  name: number[] // ゴーレム名
+  //name: number[] // ゴーレム名
   terms: Term[] // 名辞の構成
   userId: string // ユーザー ID
-  userNames: number[] // ユーザー名
-  version: string // API バージョン
+  //userNames: number[] // ユーザー名
+  //version: string // API バージョン
   winCount: number // 勝利数
 }
 
@@ -35,9 +36,10 @@ export interface Golem {
  */
 export interface Session {
   latestGolemId: string // 最新のゴーレム ID
-  latestTerms: number[] // 最新の名辞の選択肢
+  latestTermIds: number[] // 最新の名辞の選択肢
   phase: number // フェーズ数
-  termsHistory: number[][] // 提示されたすべての名辞の選択肢の履歴
+  //remainingMoney: number // 残り金額
+  //termIdsHistory: number[][] // 提示されたすべての名辞の選択肢の履歴
   userId: string // ユーザー ID
 }
 
