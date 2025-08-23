@@ -3,10 +3,24 @@ import type { Action } from '.'
 // TODO: 選択肢は enum[] にする？
 
 /**
+ * ユーザー登録 リクエスト
+ */
+export interface RegisterUserRequest {
+  //
+}
+
+/**
+ * ユーザー登録 レスポンス
+ */
+export interface RegisterUserResponse {
+  // 
+}
+
+/**
  * セッション開始 リクエスト
  */
 export interface StartSessionRequest {
-  golemName: number[] // ゴーレム名
+  //golemName: number[] // ゴーレム名
   userId: string // User.id
 }
 
@@ -15,7 +29,7 @@ export interface StartSessionRequest {
  */
 export interface StartSessionResponse {
   sessionId: string // セッション ID
-  terms: number[] // 名辞の選択肢
+  termIds: number[] // 名辞の選択肢
 }
 
 /**
@@ -23,7 +37,7 @@ export interface StartSessionResponse {
  */
 export interface StartBattleRequest {
   sessionId: string // セッション ID
-  terms: number[] // 名辞の選択肢
+  termIds: number[] // 選択した名辞の選択肢
 }
 
 /**
@@ -31,11 +45,11 @@ export interface StartBattleRequest {
  */
 export interface StartBattleResponse {
   actions: Action[] // アクション履歴
-  enemyGolemName: number[] // 対戦相手のゴーレム名
-  enemyUserName: number[] // 対戦相手のユーザー名
+  //enemyGolemName: number[] // 対戦相手のゴーレム名
+  //enemyUserName: number[] // 対戦相手のユーザー名
   loseCount: number // 敗北数
-  remainingMoney: number // 残り金額
-  terms: number[] // 名辞の選択肢
+  //remainingMoney: number // 残り金額
+  termIds: number[] // 名辞の選択肢
   winCount: number // 勝利数
 }
 
@@ -50,6 +64,6 @@ export interface RerollTermsRequest {
  * 名辞選択肢リロール リクエスト
  */
 export interface RerollTermsResponse {
-  remainingMoney: number // 残り金額
-  terms: number[] // 名辞の選択肢
+  //remainingMoney: number // 残り金額
+  //termIds: number[] // 名辞の選択肢
 }

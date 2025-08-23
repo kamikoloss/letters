@@ -67,7 +67,7 @@ app.post('/api/start-session', async (c) => {
   // レスポンス
   const res: StartSessionResponse = {
     sessionId: sessionKey,
-    terms: randomTerms,
+    termIds: randomTerms,
   }
   return c.json(res)
 })
@@ -99,11 +99,11 @@ app.post('/api/start-battle', async (c) => {
   // TODO: レスポンス
   const res: StartBattleResponse = {
     actions: [],
-    enemyGolemName: [],
-    enemyUserName: [],
+    //enemyGolemName: [],
+    //enemyUserName: [],
     loseCount: 0,
-    remainingMoney: 100,
-    terms: [],
+    //remainingMoney: 100,
+    termIds: [],
     winCount: 0,
   }
   return c.json(res)
