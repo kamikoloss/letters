@@ -1,13 +1,14 @@
 import { Hono } from 'hono'
 import type { CloudflareBindings } from './types'
 import type {
+  RegisterUserResponse,
   StartBattleRequest,
   StartBattleResponse,
   StartSessionRequest,
   StartSessionResponse,
 } from './types/api-types'
 import type { Golem, Session, User } from './types/db-types'
-import { getRandomTerms, getUnixtimeDesc } from './utils'
+import { getRandomString, getRandomTermIds, getUnixtimeDesc } from './utils'
 
 type Env = {
   Bindings: CloudflareBindings
@@ -23,6 +24,11 @@ app.get('/', (c) => {
  * ユーザー登録
  */
 app.post('/api/register_user', async (c) => {
+  // レスポンス
+  const res: RegisterUserResponse = {
+    userId: getRandomString(16),
+  }
+  return c.json(res)
 })
 
 /**
@@ -37,7 +43,7 @@ app.post('/api/start-session', async (c) => {
   if (user === null) return c.json({ error: 'user is not found.' })
 
   // 名辞の選択肢を抽選する
-  const randomTerms = getRandomTerms()
+  const randomTerms = getRandomTermIds()
 
   // ゴーレムデータを作成する
   const golemKey = `${phase}:X:${getUnixtimeDesc()}`

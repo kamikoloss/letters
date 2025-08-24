@@ -13,7 +13,7 @@ export interface RegisterUserRequest {
  * ユーザー登録 レスポンス
  */
 export interface RegisterUserResponse {
-  // 
+  userId: string // User.id 
 }
 
 /**

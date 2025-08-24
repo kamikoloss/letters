@@ -3,7 +3,7 @@ import type { Action, Term } from '.'
 /**
  * ユーザー
  * 
- * key: 
+ * key: "<randomString16>"
  */
 export interface User {
   //name: number[] // ユーザー名
@@ -16,7 +16,7 @@ export interface User {
  * フェーズごとのスナップショット
  * 対戦相手の検索に使用する
  * 
- * key: "<phase>:<レートクラス>:<unixtimeDesc>:<randomString>"
+ * key: "<phase>:<レートクラス>:<unixtimeDesc>:<randomString4>"
  * TODO: 複数キャラ対応時にキャラごとのレートにする
  */
 export interface Golem {
