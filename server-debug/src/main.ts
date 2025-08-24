@@ -40,11 +40,16 @@ const refreshTerms = (terms: number[], isYou = true): void => {
 }
 
 const loadLocalStorage = (): void => {
-  // start-session-user-id
-  const userId = localStorage.getItem('start-session-user-id')
-  const userIdInput = document.getElementById('start-session-user-id')
+  // userId
+  const userId = localStorage.getItem('user-id')
+  const userIdInput = document.getElementById('user-id-input')
   if (userId === null || userIdInput === null) return
   (userIdInput as HTMLInputElement).value = userId
+  // sessionId
+  const sessionId = localStorage.getItem('session-id')
+  const sessionIdInput = document.getElementById('session-id-input')
+  if (sessionId === null || sessionIdInput === null) return
+  (sessionIdInput as HTMLInputElement).value = sessionId
 }
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = /*html*/ `
@@ -56,8 +61,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = /*html*/ `
   <button type="button" id="menu-sessions" class="w-32">Sessions</button>
 </header>
 <main>
-  <div class="my-4">
-    <div class="flex gap-x-4">
+  <div class="flex gap-x-4 my-4">
     <div>
       <h2>Field</h2>
       <div id="field" class="grid-field"></div>
@@ -99,12 +103,14 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = /*html*/ `
       <div class="w-32">
         <button id="start-session" type="button" class="w-full">start-session</button>
         <div>User ID</div>
-        <input type="text" id="start-session-user-id" class="w-full" />
+        <input type="text" id="user-id-input" class="w-full" />
       </div>
       <div class="w-32">
         <button id="start-battle" type="button" class="w-full">start-battle</button>
+        <div>Session ID</div>
+        <input type="text" id="session-id-input" class="w-full" />
         <div>Terms</div>
-        <textarea rows="6" id="start-battle-terms" class="w-full"></textarea>
+        <input type="text" id="terms-input" class="w-full" />
       </div>
       <div class="w-32">
         <button id="reroll-terms" type="button" class="w-full">reroll-terms</button>
@@ -126,15 +132,29 @@ loadLocalStorage()
 document.getElementById('register-user')?.addEventListener('click', async () => {
   // リクエスト
   const { userId } = await registerUser()
-  // ユーザー ID の入力欄に設定する
-  const userIdInput = document.getElementById('start-session-user-id')
+  // userId: 入力欄 + LocalStorage に設定する
+  const userIdInput = document.getElementById('user-id-input')
   if (userIdInput === null) return
   (userIdInput as HTMLInputElement).value = userId
-  localStorage.setItem('start-session-user-id', userId)
+  localStorage.setItem('user-id', userId)
 })
 document.getElementById('start-session')?.addEventListener('click', async () => {
+  // userId: 入力欄を取得する
+  const userIdInput = document.getElementById('user-id-input')
+  if (userIdInput === null) return
+  const userId = (userIdInput as HTMLInputElement).value
+  // リクエスト
+  const startSessionReq = { userId }
+  const { sessionId, termIds } = await startSession(startSessionReq)
+  // sessionId: 入力欄 + LocalStorage に設定する
+  const sessionIdInput = document.getElementById('session-id-input')
+  if (sessionIdInput === null) return
+  (sessionIdInput as HTMLInputElement).value = sessionId
+  localStorage.setItem('session-id', sessionId)
+  // termIds: 
 })
 document.getElementById('start-battle')?.addEventListener('click', async () => {
+  // リクエスト
 })
 
 // 通信
@@ -152,10 +172,42 @@ const registerUser = async(): Promise<RegisterUserResponse> => {
     })
 }
 
-const startSession = () => {
-
+export interface StartSessionRequest {
+  userId: string // User.id
+}
+export interface StartSessionResponse {
+  sessionId: string // セッション ID
+  termIds: number[] // 名辞の選択肢
+}
+const startSession = async (data: StartSessionRequest): Promise<StartSessionResponse> => {
+  const url = `${import.meta.env.VITE_API_BASE_URL}/api/start-session`
+  return fetch(url, { method: 'POST', body: JSON.stringify(data)})
+    .then(async res => {
+      const json = await res.json()
+      console.log(url, { data, json })
+      return json
+    })
 }
 
-const startBattle = () => {
-
+export interface Action {
+  actionType: string // 動作タイプ
+}
+export interface StartBattleRequest {
+  sessionId: string // セッション ID
+  termIds: number[] // 選択した名辞の選択肢
+}
+export interface StartBattleResponse {
+  actions: Action[] // アクション履歴
+  loseCount: number // 敗北数
+  termIds: number[] // 名辞の選択肢
+  winCount: number // 勝利数
+}
+const startBattle = (data: StartBattleRequest): Promise<StartBattleResponse> => {
+  const url = `${import.meta.env.VITE_API_BASE_URL}/api/start-battle`
+  return fetch(url, { method: 'POST', body: JSON.stringify(data)})
+    .then(async res => {
+      const json = await res.json()
+      console.log(url, { data, json })
+      return json
+    })
 }

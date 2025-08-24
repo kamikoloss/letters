@@ -43,10 +43,11 @@ app.post('/api/register-user', async (c) => {
 app.post('/api/start-session', async (c) => {
   const req = await c.req.parseBody<StartSessionRequest>()
   const phase = 0
+  //console.log('/api/start-session', { req })
 
   // ユーザーデータを取得する
   const user = await c.env.SESSIONS.get<User>(req.userId, 'json')
-  if (user === null) return c.json({ error: 'user is not found.' })
+  if (user === null) return c.json({ error: 'user is not found.', user })
 
   // 名辞の選択肢を抽選する
   const randomTerms = getRandomTermIds()
@@ -89,6 +90,7 @@ app.post('/api/start-session', async (c) => {
  */
 app.post('/api/start-battle', async (c) => {
   const req = await c.req.parseBody<StartBattleRequest>()
+  //console.log('/api/start-battle', { req })
 
   // セッションデータを取得する
   const session = await c.env.SESSIONS.get<Session>(req.sessionId, 'json')
