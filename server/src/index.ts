@@ -9,24 +9,30 @@ import type {
 } from './types/api-types'
 import type { Golem, Session, User } from './types/db-types'
 import { getRandomString, getRandomTermIds, getUnixtimeDesc } from './utils'
+import { cors } from 'hono/cors'
 
 type Env = {
   Bindings: CloudflareBindings
 }
 
 const app = new Hono<Env>()
-
-app.get('/', (c) => {
-  return c.text('Hello Hono!')
-})
+app.use('/api/*', cors())
 
 /**
  * ユーザー登録
  */
-app.post('/api/register_user', async (c) => {
+app.post('/api/register-user', async (c) => {
+  // ユーザーデータを作成する
+  const userKey = `${getRandomString(16)}`
+  const user: User = {
+    //name: [],
+    rate: 1500, // TODO: const
+  }
+  await c.env.USERS.put(userKey, JSON.stringify(user))
+
   // レスポンス
   const res: RegisterUserResponse = {
-    userId: getRandomString(16),
+    userId: userKey,
   }
   return c.json(res)
 })
@@ -56,7 +62,7 @@ app.post('/api/start-session', async (c) => {
     //version: '',
     winCount: 0,
   }
-  c.env.SESSIONS.put(golemKey, JSON.stringify(golem))
+  await c.env.SESSIONS.put(golemKey, JSON.stringify(golem))
 
   // セッションデータを作成する
   const sessionKey = `${req.userId}:${getUnixtimeDesc()}`
@@ -68,7 +74,7 @@ app.post('/api/start-session', async (c) => {
     //termsHistory: [randomTerms],
     userId: req.userId,
   }
-  c.env.SESSIONS.put(sessionKey, JSON.stringify(session))
+  await c.env.SESSIONS.put(sessionKey, JSON.stringify(session))
 
   // レスポンス
   const res: StartSessionResponse = {
@@ -98,7 +104,7 @@ app.post('/api/start-battle', async (c) => {
 
   // ゴーレムデータを作成する
   const golemKey = `${session.phase}:X:${getUnixtimeDesc()}`
-  c.env.SESSIONS.put(golemKey, JSON.stringify(golem))
+  await c.env.SESSIONS.put(golemKey, JSON.stringify(golem))
 
   // セッションデータを更新する
 

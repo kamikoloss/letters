@@ -39,9 +39,21 @@ const refreshTerms = (terms: number[], isYou = true): void => {
   termsBlock.innerHTML = html;
 }
 
+const loadLocalStorage = (): void => {
+  // start-session-user-id
+  const userId = localStorage.getItem('start-session-user-id')
+  const userIdInput = document.getElementById('start-session-user-id')
+  if (userId === null || userIdInput === null) return
+  (userIdInput as HTMLInputElement).value = userId
+}
+
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = /*html*/ `
-<header>
-  <h1>LETTERS Debugger</h1>
+<header class="flex gap-x-4">
+  <h1 class="w-32">LETTERS</h1>
+  <button type="button" id="menu-debugger" class="w-32">Debugger</button>
+  <button type="button" id="menu-users" class="w-32">Users</button>
+  <button type="button" id="menu-golems" class="w-32">Golems</button>
+  <button type="button" id="menu-sessions" class="w-32">Sessions</button>
 </header>
 <main>
   <div class="my-4">
@@ -87,12 +99,12 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = /*html*/ `
       <div class="w-32">
         <button id="start-session" type="button" class="w-full">start-session</button>
         <div>User ID</div>
-        <input type="text" class="w-full" />
+        <input type="text" id="start-session-user-id" class="w-full" />
       </div>
       <div class="w-32">
         <button id="start-battle" type="button" class="w-full">start-battle</button>
         <div>Terms</div>
-        <textarea rows="6" class="w-full"></textarea>
+        <textarea rows="6" id="start-battle-terms" class="w-full"></textarea>
       </div>
       <div class="w-32">
         <button id="reroll-terms" type="button" class="w-full">reroll-terms</button>
@@ -108,22 +120,42 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = /*html*/ `
 refreshField()
 refreshTerms([], true) // You
 refreshTerms([], false) // Enemy
+loadLocalStorage()
 
 // ボタン
-document.getElementById('register-user')?.addEventListener('click', () => {
+document.getElementById('register-user')?.addEventListener('click', async () => {
+  // リクエスト
+  const { userId } = await registerUser()
+  // ユーザー ID の入力欄に設定する
+  const userIdInput = document.getElementById('start-session-user-id')
+  if (userIdInput === null) return
+  (userIdInput as HTMLInputElement).value = userId
+  localStorage.setItem('start-session-user-id', userId)
 })
-document.getElementById('start-session')?.addEventListener('click', () => {
+document.getElementById('start-session')?.addEventListener('click', async () => {
 })
-document.getElementById('start-battle')?.addEventListener('click', () => {
+document.getElementById('start-battle')?.addEventListener('click', async () => {
 })
 
 // 通信
-const registerUser = () => {
-
+export interface RegisterUserResponse {
+  userId: string // User.id 
 }
+const registerUser = async(): Promise<RegisterUserResponse> => {
+  const data = {}
+  const url = `${import.meta.env.VITE_API_BASE_URL}/api/register-user`
+  return fetch(url, { method: 'POST', body: JSON.stringify(data)})
+    .then(async res => {
+      const json = await res.json()
+      console.log(url, { data, json })
+      return json
+    })
+}
+
 const startSession = () => {
 
 }
+
 const startBattle = () => {
 
 }
