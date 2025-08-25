@@ -1,6 +1,6 @@
 import './style.css'
 
-const FIELD_SIZE = [12, 4] // [x, y]
+const FIELD_SIZE = [16, 8] // [x, y] 壁を含むフィールドのサイズ
 const TERMS_SIZE = [6, 6] // [x, y]
 
 const refreshField = (): void => {
@@ -8,13 +8,13 @@ const refreshField = (): void => {
   if (fieldBlock === null) return
 
   const isWall = (x: number, y: number): boolean => {
-    if (x === 0 || x === FIELD_SIZE[0] + 1) return true
-    if (y === 0 || y === FIELD_SIZE[1] + 1) return true
+    if (x === 0 || x === FIELD_SIZE[0] - 1) return true
+    if (y === 0 || y === FIELD_SIZE[1] - 1) return true
     return false
   }
   let html = ''
-  for (let y = 0; y < FIELD_SIZE[1] + 2; y++) {
-    for (let x = 0; x < FIELD_SIZE[0] + 2; x++) {
+  for (let y = 0; y < FIELD_SIZE[1]; y++) {
+    for (let x = 0; x < FIELD_SIZE[0]; x++) {
       if (isWall(x, y)) {
         html += /*html*/ `<div class="cell bg-gray"></div>`
       } else {
@@ -52,6 +52,8 @@ const loadLocalStorage = (): void => {
   (sessionIdInput as HTMLInputElement).value = sessionId
 }
 
+const fieldStyle = `grid-template-columns: repeat(${FIELD_SIZE[0]}, 1fr);`
+const termsStyle = `grid-template-columns: repeat(${TERMS_SIZE[0]}, 1fr);`
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = /*html*/ `
 <header class="flex gap-x-4">
   <h1 class="w-32">LETTERS</h1>
@@ -64,7 +66,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = /*html*/ `
   <div class="flex gap-x-4 my-4">
     <div>
       <h2>Field</h2>
-      <div id="field" class="grid-field"></div>
+      <div id="field" class="grid" style="${fieldStyle}"></div>
       <div>
         <div>Session ID: <span id="session-id">xxxx</span></div>
         <div>Phase: <span id="session-phase">9999</span></div>
@@ -73,7 +75,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = /*html*/ `
     </div>
     <div>
       <h2>You</h2>
-      <div id="terms-you" class="grid-terms"></div>
+      <div id="terms-you" class="grid" style="${termsStyle}"></div>
       <div>
         <div>User ID: <span id="you-user-id">xxxx</span></div>
         <div>Golem ID: <span id="you-golem-id">xxxx</span></div>
@@ -84,7 +86,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = /*html*/ `
     </div>
     <div>
       <h2>Enemy</h2>
-      <div id="terms-enemy" class="grid-terms"></div>
+      <div id="terms-enemy" class="grid" style="${termsStyle}"></div>
       <div>
         <div>User ID: <span id="enemy-user-id">xxxx</span></div>
         <div>Golem ID: <span id="enemy-golem-id">xxxx</span></div>
