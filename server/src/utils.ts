@@ -1,6 +1,6 @@
 
 const RANDOM_STRING_BASE = 'abcdefghijklmnopqrstuvqxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-const UNIXTIME_DESC_BASE = 1000000000000
+const UNIXTIME_DESC_BASE = 10000000000
 
 /**
  * ランダム文字列を取得する
@@ -20,7 +20,7 @@ export function getRandomString(length: number): string {
  * (UNIXTIME_DESC_BASE - Unixtime) のゼロ埋め10文字
  */
 export function getUnixtimeDesc(): string {
-  const unixtime = Math.floor(Date.now())
+  const unixtime = Math.floor(Date.now() / 1000)
   return String(UNIXTIME_DESC_BASE - unixtime).padStart(10, '0');
 }
 

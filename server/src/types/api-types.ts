@@ -13,7 +13,7 @@ export interface RegisterUserRequest {
  * ユーザー登録 レスポンス
  */
 export interface RegisterUserResponse {
-  userId: string // User.id 
+  userId: string // ユーザー ID
 }
 
 /**
@@ -21,7 +21,7 @@ export interface RegisterUserResponse {
  */
 export interface StartSessionRequest {
   //golemName: number[] // ゴーレム名
-  userId: string // User.id
+  userId: string // ユーザー ID
 }
 
 /**
@@ -37,7 +37,7 @@ export interface StartSessionResponse {
  */
 export interface StartBattleRequest {
   sessionId: string // セッション ID
-  termIds: number[] // 選択した名辞の選択肢
+  terms: number[] // 名辞の情報 (ID, 座標)
 }
 
 /**
